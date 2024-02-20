@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
   },
   content: {
     color: "#F2F2F2",
+    width: "70%",
   },
   dateContent: {
     color: "#F2F2F2",
@@ -31,5 +32,6 @@ export const styles = StyleSheet.create({
   completedContent: {
     textDecorationLine: "line-through",
     color: "#808080",
+    width: "70%",
   },
 });
