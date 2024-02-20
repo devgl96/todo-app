@@ -36,4 +36,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  buttonCalendar: {
+    width: 56,
+    height: 56,
+    borderRadius: 5,
+    backgroundColor: "#5E60CE",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 5,
+  },
 });

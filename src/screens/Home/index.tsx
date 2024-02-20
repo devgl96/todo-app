@@ -8,6 +8,7 @@ import { styles } from "./styles";
 interface TaskProps {
   id: number;
   description: string;
+  date: Date;
   created: boolean;
   completed: boolean;
 }
@@ -15,7 +16,11 @@ interface TaskProps {
 export default function Home() {
   const [tasks, setTasks] = useState<TaskProps[]>([]);
 
-  function handleAddTask(description: string) {
+  function handleAddTask(description: string, date: Date) {
+    if (!description.length) {
+      return Alert.alert("Não é possível criar a tarefa sem descrevê-la.");
+    }
+
     const findDescriptionTask = tasks.find(
       (task) => task.description === description
     );
@@ -31,6 +36,7 @@ export default function Home() {
       {
         id: prevState.length,
         description,
+        date,
         created: true,
         completed: false,
       },

@@ -1,20 +1,43 @@
-import { TextInput, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Button, TextInput, TouchableOpacity, View } from "react-native";
 import { styles } from "./styles";
 import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 
 interface TaskInputProps {
-  onAddTask: (description: string) => void;
+  onAddTask: (description: string, date: Date) => void;
 }
 
 export function TaskInput(props: TaskInputProps) {
   const { onAddTask } = props;
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState(new Date());
   const [isFocus, setIsFocus] = useState(false);
+  const [mode, setMode] = useState<string>("date");
+  const [show, setShow] = useState(false);
 
   function handleSubmit() {
-    onAddTask(description);
+    onAddTask(description, date);
     setDescription("");
+  }
+
+  function onChange(
+    event: DateTimePickerEvent,
+    selectedDate: Date | undefined
+  ) {
+    const currentDate = selectedDate;
+
+    setShow(false);
+
+    if (currentDate) {
+      setDate(currentDate);
+    }
+  }
+
+  function showDatePicker() {
+    setShow(true);
   }
 
   return (
@@ -28,9 +51,20 @@ export function TaskInput(props: TaskInputProps) {
         onBlur={() => setIsFocus(false)}
         value={description}
       />
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Feather name="plus-circle" size={16} color="#FFF" />
+      <TouchableOpacity style={styles.buttonCalendar} onPress={showDatePicker}>
+        <Feather name="calendar" size={18} color="#FFF" title="Date" />
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Feather name="plus-circle" size={18} color="#FFF" />
+      </TouchableOpacity>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          is24Hour
+          onChange={onChange}
+        />
+      )}
     </View>
   );
 }
