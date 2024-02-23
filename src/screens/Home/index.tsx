@@ -4,6 +4,17 @@ import { TaskInput } from "../../components/TaskInput";
 import { Task } from "../../components/Task";
 import { Feather } from "@expo/vector-icons";
 import { styles } from "./styles";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 interface TaskProps {
   id: number;
@@ -15,6 +26,31 @@ interface TaskProps {
 
 export default function Home() {
   const [tasks, setTasks] = useState<TaskProps[]>([]);
+
+  async function schedulePushNotification(description: string) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Para fazer 📃",
+        body: description,
+      },
+      trigger: {
+        seconds: 3,
+        channelId: "new-tasks",
+      },
+    });
+  }
+
+  async function onDisplayNotification(description: string) {
+    await Notifications.setNotificationChannelAsync("new-tasks", {
+      name: "Nova Tarefa",
+      sound: "notification-song.wav",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#4EA8DE",
+    });
+
+    await schedulePushNotification(description);
+  }
 
   function handleAddTask(description: string, date: Date) {
     if (!description.length) {
@@ -30,6 +66,8 @@ export default function Home() {
         "Descrição da Tarefa Idêntica! Tente uma nova tarefa!"
       );
     }
+
+    onDisplayNotification(description);
 
     setTasks((prevState) => [
       ...prevState,
